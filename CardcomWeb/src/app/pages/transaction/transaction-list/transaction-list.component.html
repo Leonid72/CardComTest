@@ -1,0 +1,114 @@
+
+
+<div class="toolbar">
+  <button [routerLink]="['/transactions/new']">+ Add New Transaction</button>
+
+  <label>
+    Filter by status:
+    <select [formControl]="statusCtrl">
+      <option value="all">All</option>
+      <option value="Pending">pending</option>
+      <option value="Completed">completed</option>
+      <option value="Canceled">canceled</option>
+    </select>
+  </label>
+</div>
+<!-- Desktop table -->
+<div class="table-wrap desktop-only">
+  <table>
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th class="num">Amount</th>
+        <th (click)="toggleDateSort()" class="sortable">
+          Date <span>{{ dateSortCtrl.value === 'date_desc' ? '⬇️' : '⬆️' }}</span>
+        </th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody *ngIf="transactions$ | async as transactions">
+      <tr *ngFor="let t of (transactions | tansactionFilter: statusCtrl.value | sortByDate: dateSortCtrl.value); trackBy: trackById">
+        <td>{{ t.customerName }}</td>
+        <td class="num">{{ t.amount | currency }}</td>
+        <td>{{ t.createdDate | date:'short' }}</td>
+        <td>{{ t.status }}</td>
+        <td class="actions">
+          <button [routerLink]="['/transactions/edit',t.id]">Edit</button>
+          <button (click)="remove(t)">Remove</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Mobile cards -->
+<div class="mobile-only" *ngIf="transactions$ | async as transactions">
+  <div
+    class="tx-card"
+    *ngFor="let t of (transactions | tansactionFilter: statusCtrl.value | sortByDate: dateSortCtrl.value); trackBy: trackById"
+  >
+    <div class="row">
+      <div class="title">{{ t.customerName }}</div>
+      <div class="status">{{ t.status }}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Amount</div>
+      <div class="value num">{{ t.amount | currency }}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Date</div>
+      <div class="value">{{ t.createdDate | date:'short' }}</div>
+    </div>
+
+    <div class="actions">
+      <button [routerLink]="['/transactions', t.id, 'edit']">Edit</button>
+      <button (click)="remove(t)">Remove</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <button [routerLink]="['/transactions/new']">Add new</button>
+<label>
+  Filter by status:
+  <select [formControl]="statusCtrl">
+    <option value="all">All</option>
+    <option value="Pending">Pending</option>
+    <option value="Completed">Completed</option>
+    <option value="Rejected">Rejected</option>
+  </select>
+</label>
+<table>
+    <header>
+        <tr>
+            <th>Cuastomer Name</th>
+            <th>Amount</th>
+            <th (click)="toggleDateSort()" style="cursor: pointer">
+                Date
+                <span>
+                    {{ dateSortCtrl.value === 'date_desc' ? '⬇️' : '⬆️' }}
+                </span>
+            </th>
+            <th>Status</th>
+        </tr>
+    </header>
+    <body *ngIf="(transactions$ | async) as transactions">
+        <tr *ngFor="let transaction of transactions | tansactionFilter: statusCtrl.value | sortByDate: dateSortCtrl.value; trackBy: trackById">
+            <td>{{ transaction.customerName }}</td>
+            <td>{{ transaction.amount }}</td>
+            <td>{{ transaction.createdDate| date:'short' }}</td>
+            <td>{{ transaction.status }}</td>
+            <td>
+                    <button [routerLink]="['/transactions/edit',transaction.id]">Edit</button>
+                </td>
+            <td>
+                <button type="button" (click)="remove(transaction)">Remove</button>
+            </td>
+        </tr>
+    </body>
+</table> -->

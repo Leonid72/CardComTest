@@ -1,0 +1,59 @@
+<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="customerName">Customer Name</label>
+    <input
+      id="customerName"
+      type="text"
+      formControlName="customerName"
+    />
+
+    @if (
+      transactionForm.controls['customerName'].invalid &&
+      transactionForm.controls['customerName'].touched
+    ) {
+      <div>Customer name is required (min 3 characters).</div>
+    }
+  </div>
+
+  <div>
+    <label for="amount">Amount</label>
+    <input
+      id="amount"
+      type="number"
+      formControlName="amount"
+      inputmode="decimal"
+      step="0.01"
+      min="0.1"
+    />
+
+    @if (
+      transactionForm.controls['amount'].invalid &&
+      transactionForm.controls['amount'].touched
+    ) {
+      <div>Amount is required and must be greater than 0.</div>
+    }
+  </div>
+
+  <div>
+    <label for="status">Status</label>
+    <!-- <app-status-transaction-dd formControlName="status"></app-status-transaction-dd> -->
+    <select id="status" formControlName="status">
+        <option value="Pending">Pending</option>
+        <option value="Completed">Completed</option>
+        <option value="Rejected">Rejected</option>
+    </select>
+
+    @if (
+      transactionForm.controls['status'].invalid &&
+      transactionForm.controls['status'].touched
+    ) {
+      <div>Status is required.</div>
+    }
+  </div>
+
+  <button type="submit" [disabled]="transactionForm.invalid || isSubmitting()">
+    {{ isSubmitting() ? 'Submitting...' : 'Submit' }}
+  </button>
+
+</form>
