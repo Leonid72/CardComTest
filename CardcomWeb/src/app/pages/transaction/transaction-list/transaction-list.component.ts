@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { TransactionService } from '../../../services/transaction.service';
 import { CommonModule } from '@angular/common';
 import { StatusFilter, Transaction } from '../../../models/transaction.interface';
@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TansactionFilterPipe } from "../../../pipes/tansaction-filter.pipe";
 import { SortByDatePipe } from "../../../pipes/sort-by-date.pipe";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type DateSort = 'date_desc' | 'date_asc';
 @Component({
@@ -19,12 +20,11 @@ type DateSort = 'date_desc' | 'date_asc';
 export class TransactionListComponent implements OnInit {
 
   transactionsSrv = inject(TransactionService);
-  
   readonly statusCtrl = new FormControl<StatusFilter>('all', { nonNullable: true });
-
   dateSortCtrl = new FormControl<DateSort>('date_desc', { nonNullable: true });
-  
   transactions$ = this.transactionsSrv.transactions$;
+  destroyRef = inject(DestroyRef);
+
    ngOnInit(): void {
     this.loadTransactions()
   }
@@ -32,7 +32,8 @@ export class TransactionListComponent implements OnInit {
 loadTransactions() {
   this.transactionsSrv.getTransactions()
   .pipe(
-     catchError((err) => {
+    takeUntilDestroyed(this.destroyRef),
+    catchError((err) => {
                   console.error('Error fetching transactions', err);
                   return of([]); }
   )).subscribe();
