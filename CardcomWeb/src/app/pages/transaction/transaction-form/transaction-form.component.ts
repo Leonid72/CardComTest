@@ -98,6 +98,7 @@ onSubmit() {
       return;
     }
 
+    const action = this.isEditMode() ? 'updating' : 'adding';
      req$
       .pipe(
         finalize(() => this.isSubmitting.set(false)),
@@ -105,12 +106,10 @@ onSubmit() {
       )
       .subscribe({
         next: (res: Transaction) => {
-            const action = this.isEditMode() ? 'updated' : 'added';
             console.log(`Transactions ${action} successfully`, res);
             this.router.navigate(['/transactions']);
         }
         ,error: (err: any) => {
-            const action = this.isEditMode() ? 'updating' : 'adding';
             console.error(`Error ${action} transaction`, err);
       }
 
