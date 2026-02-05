@@ -65,7 +65,7 @@
     </div>
 
     <div class="actions">
-      <button [routerLink]="['/transactions', t.id, 'edit']">Edit</button>
+      <button [routerLink]="['/transactions/edit',t.id]">Edit</button>
       <button (click)="remove(t)">Remove</button>
     </div>
   </div>
